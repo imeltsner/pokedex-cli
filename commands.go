@@ -51,7 +51,7 @@ func commandExit(c *pokeapi.Config) error {
 }
 
 func commandMap(c *pokeapi.Config) error {
-	res, err := c.GetLocationArea()
+	res, err := c.GetLocationArea(true)
 	if err != nil {
 		return err
 	}
@@ -62,5 +62,12 @@ func commandMap(c *pokeapi.Config) error {
 }
 
 func commandMapB(c *pokeapi.Config) error {
+	res, err := c.GetLocationArea(false)
+	if err != nil {
+		return err
+	}
+	for _, v := range res.Results {
+		fmt.Println(v.Name)
+	}
 	return nil
 }
