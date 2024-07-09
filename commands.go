@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(c *pokeapi.Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -38,20 +38,20 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
-func commandHelp() error {
+func commandHelp(c *pokeapi.Config) error {
 	for _, cmd := range getCommands() {
 		fmt.Printf("%s - %s\n", cmd.name, cmd.description)
 	}
 	return nil
 }
 
-func commandExit() error {
+func commandExit(c *pokeapi.Config) error {
 	os.Exit(0)
 	return nil
 }
 
-func commandMap() error {
-	res, err := pokeapi.GetLocationArea()
+func commandMap(c *pokeapi.Config) error {
+	res, err := c.GetLocationArea()
 	if err != nil {
 		return err
 	}
@@ -61,6 +61,6 @@ func commandMap() error {
 	return nil
 }
 
-func commandMapB() error {
+func commandMapB(c *pokeapi.Config) error {
 	return nil
 }

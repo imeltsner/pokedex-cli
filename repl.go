@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/imeltsner/pokedex-cli/internal/pokeapi"
 )
 
 func cleanInput(s string) []string {
@@ -18,6 +20,7 @@ func startRepl() {
 	fmt.Println("help - displays a help message")
 	fmt.Println("exit - exits the program")
 
+	config := pokeapi.Config{}
 	for {
 		fmt.Print("pokedex > ")
 		scanner := bufio.NewScanner(os.Stdin)
@@ -33,7 +36,7 @@ func startRepl() {
 			fmt.Println("invalid command")
 			continue
 		} else {
-			cmd.callback()
+			cmd.callback(&config)
 		}
 	}
 }

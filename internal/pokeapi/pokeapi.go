@@ -10,16 +10,28 @@ import (
 type LocationArea struct {
 	Count    int    `json:"count"`
 	Next     string `json:"next"`
-	Previous any    `json:"previous"`
+	Previous string `json:"previous"`
 	Results  []struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	} `json:"results"`
 }
 
-func GetLocationArea() (LocationArea, error) {
+type Config struct {
+	next string
+	prev string
+}
+
+func (c *Config) GetLocationArea() (LocationArea, error) {
 	var locationArea LocationArea
-	res, err := http.Get("https://pokeapi.co/api/v2/location-area")
+	var res *http.Response
+	var err error
+
+	if c.next == "" {
+		res, err = http.Get("https://pokeapi.co/api/v2/location-area")
+	} else {
+		res, err = http.Get(c.next)
+	}
 	if err != nil {
 		return locationArea, err
 	}
@@ -39,5 +51,7 @@ func GetLocationArea() (LocationArea, error) {
 		return locationArea, err
 	}
 
+	c.next = locationArea.Next
+	c.prev = locationArea.Previous
 	return locationArea, nil
 }
