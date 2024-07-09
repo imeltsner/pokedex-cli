@@ -2,7 +2,6 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -19,35 +18,21 @@ type LocationArea struct {
 }
 
 type Config struct {
-	next string
-	prev string
+	Next string
+	Prev string
 }
 
-func (c *Config) GetLocationArea(forward bool) (LocationArea, error) {
+func GetLocationArea(c *Config, link string) (LocationArea, error) {
 	var locationArea LocationArea
-	var res *http.Response
-	var err error
 
-	if forward {
-		if c.next == "" {
-			res, err = http.Get("https://pokeapi.co/api/v2/location-area")
-		} else {
-			res, err = http.Get(c.next)
-		}
-	} else {
-		if c.prev == "" {
-			fmt.Println("no previous data")
-			return locationArea, errors.New("no previous data error")
-		} else {
-			res, err = http.Get(c.prev)
-		}
-	}
+	res, err := http.Get(link)
 	if err != nil {
 		return locationArea, err
 	}
 
 	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
+
 	if res.StatusCode > 299 {
 		return locationArea, fmt.Errorf("status error %v", res.StatusCode)
 	}
@@ -61,7 +46,7 @@ func (c *Config) GetLocationArea(forward bool) (LocationArea, error) {
 		return locationArea, err
 	}
 
-	c.next = locationArea.Next
-	c.prev = locationArea.Previous
+	c.Next = locationArea.Next
+	c.Prev = locationArea.Previous
 	return locationArea, nil
 }

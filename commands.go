@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -51,18 +52,32 @@ func commandExit(c *pokeapi.Config) error {
 }
 
 func commandMap(c *pokeapi.Config) error {
-	res, err := c.GetLocationArea(true)
+	var link string
+	if c.Next == "" {
+		link = "https://pokeapi.co/api/v2/location-area"
+	} else {
+		link = c.Next
+	}
+
+	res, err := pokeapi.GetLocationArea(c, link)
 	if err != nil {
 		return err
 	}
+
 	for _, v := range res.Results {
 		fmt.Println(v.Name)
 	}
+
 	return nil
 }
 
 func commandMapB(c *pokeapi.Config) error {
-	res, err := c.GetLocationArea(false)
+	if c.Prev == "" {
+		return errors.New("no previous data")
+	}
+
+	link := c.Prev
+	res, err := pokeapi.GetLocationArea(c, link)
 	if err != nil {
 		return err
 	}

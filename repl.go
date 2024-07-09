@@ -17,10 +17,9 @@ func cleanInput(s string) []string {
 func startRepl() {
 	fmt.Println("Welcome to the Pokedex")
 	fmt.Println("Usage:")
-	fmt.Println("help - displays a help message")
-	fmt.Println("exit - exits the program")
-
 	config := pokeapi.Config{}
+	commandHelp(&config)
+
 	for {
 		fmt.Print("pokedex > ")
 		scanner := bufio.NewScanner(os.Stdin)
@@ -36,7 +35,10 @@ func startRepl() {
 			fmt.Println("invalid command")
 			continue
 		} else {
-			cmd.callback(&config)
+			err := cmd.callback(&config)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }
