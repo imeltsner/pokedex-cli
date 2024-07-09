@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/imeltsner/pokedex-cli/internal/pokeapi"
 )
 
 type cliCommand struct {
@@ -49,6 +51,13 @@ func commandExit() error {
 }
 
 func commandMap() error {
+	res, err := pokeapi.GetLocationArea()
+	if err != nil {
+		return err
+	}
+	for _, v := range res.Results {
+		fmt.Println(v.Name)
+	}
 	return nil
 }
 
